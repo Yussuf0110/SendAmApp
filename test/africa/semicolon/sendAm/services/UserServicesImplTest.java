@@ -1,12 +1,11 @@
 package africa.semicolon.sendAm.services;
 
-import africa.semicolon.sendAm.data.repositories.PackageRepository;
-import africa.semicolon.sendAm.data.repositories.PackageRepositoryImpl;
 import africa.semicolon.sendAm.dtos.requests.RegisterUserRequests;
+import africa.semicolon.sendAm.dtos.responses.FindUserResponse;
 import africa.semicolon.sendAm.dtos.responses.RegisterUserResponse;
 import africa.semicolon.sendAm.exceptions.RegisterFailureException;
 import africa.semicolon.sendAm.exceptions.SendAmAppException;
-import junit.framework.TestCase;
+import africa.semicolon.sendAm.exceptions.UserNotFoundException;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,7 +71,41 @@ public class UserServicesImplTest {
         assertEquals("LotaPicker",response.getFullName());
         assertEquals("weareallin@gmail.com",response.getEmail());
 
+    }
 
+
+
+    @Test
+    public void findRegisteredUserByEmailTest(){
+        RegisterUserRequests lotaForm = createRegisterMethod();
+        userService.register(lotaForm);
+
+        FindUserResponse result = userService.findUserByEmail(lotaForm.getEmailAddress().toLowerCase());
+
+        assertEquals("LotaPicker", result.getFullName());
+        assertEquals("weareallin@gmail.com", result.getEmail());
+
+    }
+
+    @Test
+    public void findingUnregisteredEmail_throwsException(){
+        RegisterUserRequests lotaForm = createRegisterMethod();
+        userService.register(lotaForm);
+
+        assertThrows(UserNotFoundException.class, ()->userService.findUserByEmail("adeola@gmail.com"));
+    }
+
+
+
+@Test
+    public void findByUserEmailIsNotCaseSensitiveTest(){
+        RegisterUserRequests lotaForm = createRegisterMethod();
+        userService.register(lotaForm);
+
+        FindUserResponse response = userService.findUserByEmail("weAreAllIn@gmail.com");
+
+        assertEquals("LotaPicker", response.getFullName());
+        assertEquals("weareallin@gmail.com", response.getEmail());
 
     }
 

@@ -4,8 +4,10 @@ import africa.semicolon.sendAm.data.models.User;
 import africa.semicolon.sendAm.data.repositories.UserRepository;
 import africa.semicolon.sendAm.data.repositories.UserRepositoryImpl;
 import africa.semicolon.sendAm.dtos.requests.RegisterUserRequests;
+import africa.semicolon.sendAm.dtos.responses.FindUserResponse;
 import africa.semicolon.sendAm.dtos.responses.RegisterUserResponse;
 import africa.semicolon.sendAm.exceptions.RegisterFailureException;
+import africa.semicolon.sendAm.exceptions.UserNotFoundException;
 
 public class UserServicesImpl implements UserServices{
     private UserRepository userRepository = new UserRepositoryImpl();
@@ -20,16 +22,14 @@ public class UserServicesImpl implements UserServices{
         String email = requestForm.getEmailAddress();
         String phoneNo = requestForm.getPhoneNumber();
         String address = requestForm.getAddress();
+
         User user = new User(email,name,phoneNo,address);
 
 
 
-//        user.setFullName(requestForm.getFirstName() + requestForm.getLastName());
-//        user.setAddress(requestForm.getAddress());
-//        user.setPhoneNumber(requestForm.getPhoneNumber());
-//        user.setEmail(requestForm.getEmailAddress());
 
-        userRepository.save(user);
+
+//        userRepository.save(user);
 
         User savedUser = userRepository.save(user);
 
@@ -51,6 +51,20 @@ public class UserServicesImpl implements UserServices{
     @Override
     public  UserRepository getRepository(){
         return userRepository;
+    }
+
+    @Override
+    public FindUserResponse findUserByEmail(String email) {
+        email = email.toLowerCase();
+        User user = userRepository.findByEmail(email);
+
+        if(user ==null) throw new UserNotFoundException(email + " not found");
+        FindUserResponse response = new FindUserResponse();
+        response.setEmail(user.getEmail());
+        response.setFullName(user.getFullName());
+
+
+        return response;
     }
 
 
