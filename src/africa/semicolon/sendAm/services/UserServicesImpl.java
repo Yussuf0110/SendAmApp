@@ -58,14 +58,12 @@ public class UserServicesImpl implements UserServices{
         email = email.toLowerCase();
         User user = userRepository.findByEmail(email);
 
-        if(user ==null) throw new UserNotFoundException(email + " not found");
+        if(user == null) throw new UserNotFoundException(email + " not found");
         FindUserResponse response = new FindUserResponse();
         response.setEmail(user.getEmail());
         response.setFullName(user.getFullName());
 
-
         return response;
     }
-
 
 }

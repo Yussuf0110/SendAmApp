@@ -27,8 +27,8 @@ public class PackageRepositoryImplTest {
         Package savedPackage = packageRepository.save(aPackage);
 //        assert that the returned has an id
         assertEquals(1,savedPackage.getId());
-        assertEquals(1,packageRepository.count());
 //         assert the count is 1
+        assertEquals(1,packageRepository.count());
     }
 
     @Test
